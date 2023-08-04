@@ -5,23 +5,34 @@ const bodyParser = require("body-parser");
 
 const app = express();
 
+var items = ["Buy Food","Cook Food"];
+
 app.set('view engine', 'ejs');
+
+app.use(bodyParser.urlencoded({extended: true}));
 
 app.get("/", function(req,res){
 
+    
+    var today = new Date();
+    var options = {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+    };
 
-const week = ["Sunday", "Monday", "Tuesday", "Wednesday","Thursday", "Friday","Saturday"];
-var today = new Date();
-var currentDay = today.getDay();
-var day = week[currentDay];
+    var day = today.toLocaleDateString("en-US", options);
 
-// if(currentDay === 6 || currentDay === 0 ){
-//     day= "Weekend";
-// } else{
-//     day = "Weekday";
-// }
+    res.render('list' ,{kindOfDay: day, newListItems:items});
+});
 
-    res.render('list' ,{kindOfDay: day});
+app.post("/", function(req,res){
+    
+    var item = req.body.newItem;
+
+    items.push(item);
+    
+    res.redirect("/");
 
 });
 
